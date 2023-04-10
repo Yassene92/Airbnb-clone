@@ -3,8 +3,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../Avatar';
 import MenuItem from './MenuItem';
+import useSignUpModal from '@/app/hooks/useSignUpModal';
 
 const UserMenu = () => {
+  const signUpModal = useSignUpModal();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -32,8 +34,8 @@ const UserMenu = () => {
     <div className="relative" ref={menuRef}>
       <div className="flex items-center gap-3">
         <div
-          className="hidden px-4 py-3 text-sm font-semibold transition rounded-full cursor-pointer md:block hover:bg-neutral-100"
           onClick={() => {}}
+          className="hidden px-4 py-3 text-sm font-semibold transition rounded-full cursor-pointer md:block hover:bg-neutral-100"
         >
           Airbnb your home
         </div>
@@ -51,7 +53,7 @@ const UserMenu = () => {
         <div className="absolute shadow-md rounded-xl w-[40vh] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-start  ">
           <div className="flex flex-col cursor-pointer">
             <MenuItem onClick={() => {}} label="Login" />
-            <MenuItem onClick={() => {}} label="Sign up" />
+            <MenuItem onClick={signUpModal.onOpen} label="Sign up" />
           </div>
         </div>
       )}
