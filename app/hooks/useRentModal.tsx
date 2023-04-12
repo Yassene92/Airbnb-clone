@@ -1,17 +1,16 @@
-'use client';
 import { create } from 'zustand';
 
-type LoginModalProps = {
+type RentModalProps = {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 };
 
-const useLoginModal = create<LoginModalProps>((set) => ({
+const useRentModal = create<RentModalProps>((set) => ({
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose() {
     set({ isOpen: false });
   },
 }));
-export default useLoginModal;
+export default useRentModal;

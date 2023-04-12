@@ -1,12 +1,13 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect } from 'react';
+import { signOut } from 'next-auth/react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../Avatar';
 import MenuItem from './MenuItem';
 
 import useSignUpModal from '@/app/hooks/useSignUpModal';
 import useLoginModal from '@/app/hooks/useLoginModal';
-import { signOut } from 'next-auth/react';
+import useRentModal from '@/app/hooks/useRentModal';
 import { SafeUser } from '@/app/types';
 
 type UserMenuProps = {
@@ -16,34 +17,38 @@ type UserMenuProps = {
 const UserMenu = ({ currentUser }: UserMenuProps) => {
   const signUpModal = useSignUpModal();
   const loginModal = useLoginModal();
+  const rentModal = useRentModal();
   const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLDivElement>(null);
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);
 
-  const closeMenu = useCallback(() => {
-    setIsOpen(false);
-  }, []);
+  const onRent = useCallback(() => {
+    if (!currentUser) {
+      return loginModal.onOpen();
+    }
+    rentModal.onOpen();
+  }, [currentUser, loginModal, rentModal]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        closeMenu();
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setIsOpen(false);
       }
     };
-    window.addEventListener('click', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      window.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [closeMenu]);
+  }, [ref]);
 
   return (
-    <div className="relative" ref={menuRef}>
+    <div className="relative" ref={ref}>
       <div className="flex items-center gap-3">
         <div
-          onClick={() => {}}
+          onClick={onRent}
           className="hidden px-4 py-3 text-sm font-semibold transition rounded-full cursor-pointer md:block hover:bg-neutral-100"
         >
           Airbnb your home
@@ -63,13 +68,13 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
-                <MenuItem onClick={()=> {}} label="My trips" />
-                <MenuItem onClick={()=> {}} label="My favorites" />
-                <MenuItem onClick={()=> {}} label="My reservations" />
-                <MenuItem onClick={()=> {}} label="My properties" />
-                <MenuItem onClick={()=> {}} label=" Airbnb my home" />
-                <hr/>
-                <MenuItem onClick={()=> signOut()} label="Logout" />
+                <MenuItem onClick={() => {}} label="My trips" />
+                <MenuItem onClick={() => {}} label="My favorites" />
+                <MenuItem onClick={() => {}} label="My reservations" />
+                <MenuItem onClick={() => {}} label="My properties" />
+                <MenuItem onClick={rentModal.onOpen} label=" Airbnb my home" />
+                <hr />
+                <MenuItem onClick={() => signOut()} label="Logout" />
               </>
             ) : (
               <>

@@ -10,6 +10,7 @@ import {
   useForm,
 } from 'react-hook-form';
 import useSignUpModal from '@/app/hooks/useSignUpModal';
+import useLoginModal from '@/app/hooks/useLoginModal';
 import Modal from './Modal';
 import Heading from '../Heading';
 import Input from '../inputs/Input';
@@ -19,6 +20,8 @@ import { signIn } from 'next-auth/react';
 
 const SignUpModal = () => {
   const signUpModal = useSignUpModal();
+  const LoginModal = useLoginModal();
+
   const [isLoading, setIsLoading] = useState(false);
   const {
     register,
@@ -46,6 +49,11 @@ const SignUpModal = () => {
         setIsLoading(false);
       });
   };
+
+  const toggle = useCallback(() => {
+    signUpModal.onClose();
+    LoginModal.onOpen();
+  }, [signUpModal, LoginModal]);
 
   const badyContent = (
     <div className="flex flex-col gap-4">
@@ -96,7 +104,7 @@ const SignUpModal = () => {
       <div className="flex items-center justify-center gap-2 mt-4 font-light text-neutral-500">
         <span>Already have an account?</span>
         <span
-          onClick={signUpModal.onClose}
+          onClick={toggle}
           className="cursor-pointer text-neutral-800 hover:underline"
         >
           Log in
