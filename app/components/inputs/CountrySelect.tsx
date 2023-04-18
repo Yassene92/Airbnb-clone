@@ -3,7 +3,6 @@
 import Select from 'react-select';
 
 import useCountries from '@/app/hooks/useCountries';
-import Map from '../Map';
 
 export type CountrySelectValue = {
   flag: string;
@@ -28,9 +27,10 @@ const CountrySelect = ({ value, onChange }: CountrySelectProps) => {
         value={value}
         options={getAll()}
         onChange={(value) => onChange(value as CountrySelectValue)}
-        formatOptionLabel={(option: any) => (
+        formatOptionLabel={(option) => (
           <div className="flex items-center gap-3 ">
             <div>{option.flag}</div>
+
             <div>
               {option.label},
               <span className="ml-1 text-neutral-500">{option.region}</span>
@@ -49,10 +49,9 @@ const CountrySelect = ({ value, onChange }: CountrySelectProps) => {
             ...theme.colors,
             primary: 'black',
             primary25: '#ffe4e6',
-          }
+          },
         })}
       />
-      <Map/>
     </div>
   );
 };

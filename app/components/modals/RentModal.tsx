@@ -8,6 +8,9 @@ import Heading from '../Heading';
 import { categories } from '../navbar/Categories';
 import CategoryInput from '../inputs/CategoryInput';
 import CountrySelect from '../inputs/CountrySelect';
+import Counter from '../inputs/Counter';
+
+import dynamic from 'next/dynamic';
 
 enum STEPS {
   CATEGORY = 0,
@@ -43,8 +46,18 @@ const RentModal = () => {
 
   const category = watch('category');
   const location = watch('location');
+  const guestCount = watch('guestCount');
+  const roomCount = watch('roomCount');
+  const bathroomCount = watch('bathroomCount');
 
-  const setCustomValue = (id: string, value: any) => {
+  const Map = useMemo(
+    () => dynamic(() => import('../Map'), { ssr: false }),
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [location]
+  );
+
+  const setCustomValue = (id: string, value: unknown) => {
     setValue(id, value, {
       shouldValidate: true,
       shouldDirty: true,
@@ -106,6 +119,36 @@ const RentModal = () => {
         <CountrySelect
           value={location}
           onChange={(value) => setCustomValue('location', value)}
+        />
+        <Map center={location?.latlng} />
+      </div>
+    );
+  }
+
+  if (step === STEPS.INFO) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Share some basics about your place"
+          subtitle="What amenities do you have?"
+        />
+        <Counter
+          title="Number of guests"
+          subtitle="How many people will be staying?"
+          value={guestCount}
+          onChange={(value) => setCustomValue('guestCount', value)}
+        />
+        <Counter
+          title="Rooms"
+          subtitle="How many rooms will be available?"
+          value={roomCount}
+          onChange={(value) => setCustomValue('roomCount', value)}
+        />
+        <Counter
+          title="Bathrooms"
+          subtitle="How many bathrooms will be available?"
+          value={bathroomCount}
+          onChange={(value) => setCustomValue('bathroomCount', value)}
         />
       </div>
     );
