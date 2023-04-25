@@ -3,8 +3,8 @@ import { useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 
 import useCountries from '@/app/hooks/useCountries';
-import { SafeUser } from '@/app/types';
-import { Listing, Reservation } from '@prisma/client';
+import { SafeListing, SafeUser } from '@/app/types';
+import { Reservation } from '@prisma/client';
 
 import { format } from 'date-fns';
 import Image from 'next/image';
@@ -12,7 +12,7 @@ import HeartButton from '../HeartButton';
 import Button from '../Button';
 
 interface ListingCardProps {
-  data: Listing;
+  data: SafeListing;
   reservation?: Reservation;
   onAction?: (id: string) => void;
   disabled?: boolean;
@@ -46,7 +46,7 @@ const ListingCard = ({
     if (reservation) return reservation.totalPrice;
 
     return data.price;
-  }, [data.price, reservation]);
+  }, [ reservation, data ]);
 
   const reservationDate = useMemo(() => {
     if (!reservation) return null;
@@ -56,8 +56,8 @@ const ListingCard = ({
 
     return `${format(start, 'PP')} - ${format(end, 'PP')}`;
   }, [reservation]);
-//
-  const location = getByValue(data.locationValue);
+  //
+  const location = getByValue(data?.locationValue);
   return (
     <div
       onClick={() => router.push(`/listings/${data.id}`)}
@@ -66,14 +66,14 @@ const ListingCard = ({
       <div className="flex flex-col w-full gap-2">
         <div className="relative w-full overflow-hidden aspect-square rounded-xl">
           <Image
-            src={data.imageSrc}
-            alt={data.title}
+            src={data?.imageSrc}
+            alt={data?.title}
             className="object-cover w-full h-full transition group-hover:scale-110 "
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
           <div className="absolute top-3 right-3 ">
-            <HeartButton listingId={data.id} currentUser={currentUser} />
+            <HeartButton listingId={data?.id} currentUser={currentUser} />
           </div>
         </div>
         <div className="text-lg font-semibold ">
@@ -88,10 +88,10 @@ const ListingCard = ({
         </div>
         {onAction && (
           <Button
-          disabled={disabled}
-          label={actionLabel}
-          onClick={handleCancel}
-          small
+            disabled={disabled}
+            label={actionLabel}
+            onClick={handleCancel}
+            small
           />
         )}
       </div>

@@ -1,5 +1,7 @@
 'use client';
 import { useCallback, useRef, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 import { signOut } from 'next-auth/react';
 import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../Avatar';
@@ -20,6 +22,7 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
   const rentModal = useRentModal();
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
@@ -68,7 +71,10 @@ const UserMenu = ({ currentUser }: UserMenuProps) => {
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
-                <MenuItem onClick={() => {}} label="My trips" />
+                <MenuItem
+                  onClick={() => router.push('/trips')}
+                  label="My trips"
+                />
                 <MenuItem onClick={() => {}} label="My favorites" />
                 <MenuItem onClick={() => {}} label="My reservations" />
                 <MenuItem onClick={() => {}} label="My properties" />
